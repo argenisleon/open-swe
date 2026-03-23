@@ -42,7 +42,7 @@ from .tools import (
     slack_thread_reply,
 )
 from .utils.auth import resolve_github_token
-from .utils.model import make_model
+from .utils.model import get_model_id, make_model
 from .utils.sandbox import create_sandbox
 
 client = get_client()
@@ -387,7 +387,7 @@ async def get_agent(config: RunnableConfig) -> Pregel:  # noqa: PLR0915
 
     logger.info("Returning agent with sandbox for thread %s", thread_id)
     return create_deep_agent(
-        model=make_model("anthropic:claude-opus-4-6", temperature=0, max_tokens=20_000),
+        model=make_model(get_model_id(), temperature=0, max_tokens=20_000),
         system_prompt=construct_system_prompt(
             repo_dir,
             linear_project_id=linear_project_id,

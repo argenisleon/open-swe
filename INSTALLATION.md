@@ -305,7 +305,12 @@ LANGSMITH_TRACING_PROJECT_ID_PROD=""
 LANGSMITH_URL_PROD="https://smith.langchain.com"                 
 
 # === LLM ===
+AGENT_MODEL=""                         # Model to use (default: "anthropic:claude-opus-4-6")
+                                       # Examples: "anthropic:claude-sonnet-4-5-20250929",
+                                       #           "openai:gpt-4o",
+                                       #           "minimax:MiniMax-M2.7"
 ANTHROPIC_API_KEY=""                   # Anthropic API key (default provider)
+MINIMAX_API_KEY=""                     # MiniMax API key (required for minimax: models)
 
 # === GitHub App (required) ===
 GITHUB_APP_ID=""                       # From step 3c

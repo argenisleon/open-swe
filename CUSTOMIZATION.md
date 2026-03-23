@@ -117,28 +117,35 @@ See `agent/integrations/langsmith.py` (`LangSmithBackend` class) for a full refe
 
 ## 2. Model
 
-The model is configured in the `get_agent()` function in `agent/server.py`:
+The model is configured via the `AGENT_MODEL` environment variable, defaulting to `anthropic:claude-opus-4-6`:
 
-```python
-model=make_model("anthropic:claude-opus-4-6", temperature=0, max_tokens=20_000)
+```bash
+# In .env
+AGENT_MODEL="anthropic:claude-opus-4-6"   # default if not set
 ```
 
 ### Switching models
 
-Use the `provider:model` format:
+Set `AGENT_MODEL` using the `provider:model` format:
 
-```python
+```bash
 # Anthropic
-model=make_model("anthropic:claude-sonnet-4-6", temperature=0, max_tokens=16_000)
+AGENT_MODEL="anthropic:claude-sonnet-4-5-20250929"
 
 # OpenAI (uses Responses API by default)
-model=make_model("openai:gpt-4o", temperature=0, max_tokens=16_000)
+AGENT_MODEL="openai:gpt-4o"
 
 # Google
-model=make_model("google_genai:gemini-2.5-pro", temperature=0, max_tokens=16_000)
+AGENT_MODEL="google_genai:gemini-2.5-pro"
+
+# MiniMax (OpenAI-compatible API)
+AGENT_MODEL="minimax:MiniMax-M2.7"
+MINIMAX_API_KEY="your-key"               # required for minimax: models
 ```
 
-The `make_model()` helper in `agent/utils/model.py` wraps `langchain.chat_models.init_chat_model`. For OpenAI models, it automatically enables the Responses API. For full control, pass a pre-configured model instance directly:
+You can also set the model directly in code in `get_agent()` in `agent/server.py`.
+
+The `make_model()` helper in `agent/utils/model.py` wraps `langchain.chat_models.init_chat_model`. For OpenAI models, it automatically enables the Responses API. For MiniMax models, it routes through the OpenAI-compatible API at `https://api.minimax.io/v1`. For full control, pass a pre-configured model instance directly:
 
 ```python
 from langchain_anthropic import ChatAnthropic

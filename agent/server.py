@@ -258,8 +258,16 @@ async def get_agent(config: RunnableConfig) -> Pregel:  # noqa: PLR0915
     sandbox_id = await get_sandbox_id_from_metadata(thread_id)
 
     if sandbox_id == SANDBOX_CREATING and not sandbox_backend:
-        logger.info("Sandbox creation in progress, waiting...")
-        sandbox_id = await _wait_for_sandbox_id(thread_id)
+        # No in-memory backend means no worker is actively creating this
+        # sandbox (e.g. after a server restart).  Reset the stale sentinel
+        # so the code below creates a fresh sandbox instead of waiting
+        # indefinitely for one that will never appear.
+        logger.warning(
+            "Found stale SANDBOX_CREATING for thread %s with no cached backend, resetting",
+            thread_id,
+        )
+        await client.threads.update(thread_id=thread_id, metadata={"sandbox_id": None})
+        sandbox_id = None
 
     if sandbox_backend:
         logger.info("Using cached sandbox backend for thread %s", thread_id)

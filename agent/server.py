@@ -28,6 +28,7 @@ from langsmith.sandbox import SandboxClientError
 
 from .middleware import (
     ToolErrorMiddleware,
+    auto_github_comment,
     check_message_queue_before_model,
     ensure_no_empty_msg,
     open_pr_if_needed,
@@ -408,5 +409,6 @@ async def get_agent(config: RunnableConfig) -> Pregel:  # noqa: PLR0915
             check_message_queue_before_model,
             ensure_no_empty_msg,
             open_pr_if_needed,
+            auto_github_comment,
         ],
     ).with_config(config)
